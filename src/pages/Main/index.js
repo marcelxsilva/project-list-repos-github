@@ -1,7 +1,6 @@
 import React from 'react';
 import { Container, Form, SubmitButton, List } from './styles'
 import { FaGithubAlt, FaPlus, FaSpinner } from 'react-icons/fa';
-
 import api from '../../services/api';
 
 class Main extends React.Component {
@@ -9,6 +8,20 @@ class Main extends React.Component {
     newRepo: '',
     repositories: [],
     loading: false,
+  }
+
+  componentDidMount() {
+    const repositories = localStorage.getItem('repositories');
+    if (repositories) {
+      this.setState({ repositories: JSON.parse(repositories) });
+    }
+  }
+
+  componentDidUpdate(_, prevState) {
+    const { repositories } = this.state;
+    if (prevState.repositories !== this.state.repositories) {
+      localStorage.setItem('repositories', JSON.stringify(repositories));
+    }
   }
 
   handleInputChange = e => {
