@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Form, SubmitButton } from './styles'
+import { Container, Form, SubmitButton, List } from './styles'
 import { FaGithubAlt, FaPlus, FaSpinner } from 'react-icons/fa';
 
 import api from '../../services/api';
@@ -9,8 +9,6 @@ class Main extends React.Component {
     newRepo: '',
     repositories: [],
     loading: false,
-
-
   }
 
   handleInputChange = e => {
@@ -30,10 +28,9 @@ class Main extends React.Component {
       loading: false,
     });
 
-    console.log(this.state.repositories)
   }
   render() {
-    const { newRepo, loading } = this.state;
+    const { newRepo, loading, repositories } = this.state;
     return (
       <Container >
         <h1>
@@ -52,6 +49,17 @@ class Main extends React.Component {
               <FaPlus color='#fff' size={14} />}
           </SubmitButton>
         </Form>
+
+        <List>
+          {
+            repositories.map(repository => (
+              <li key={repository.name}>
+                <span>{repository.name}</span>
+                <a href="">Detalhes</a>
+              </li>
+            ))
+          }
+        </List>
       </Container>
     );
   }
