@@ -1,7 +1,7 @@
 import React from 'react';
 import api from '../../services/api';
 import PropTypes from 'prop-types';
-import { Loading, Owner } from './style'
+import { Loading, Owner, IssuesList } from './style'
 import Container from '../../components/Container';
 import { Link } from 'react-router-dom';
 
@@ -41,9 +41,7 @@ class Repository extends React.Component {
 
   render() {
     const { repository, issues, loading } = this.state;
-
     if (loading) { return (<Loading>Carregando ...</Loading>) }
-
 
     return (
       <Container>
@@ -53,6 +51,19 @@ class Repository extends React.Component {
           <h1>{repository.name}</h1>
           <p>{repository.description}</p>
         </Owner>
+        
+        <IssuesList>
+          {issues.map(issue => (
+            <li key={String(issue.id)}>
+              <img src={issue.user.avatar_url} alt={issue.user.login} />
+              <div>
+                <strong><a href={issue.html_url}>{issue.title}</a></strong>
+                <p>{issue.user.login}</p>
+              </div>
+            </li>
+          ))}
+        </IssuesList>
+        
       </Container>
     );
   }
