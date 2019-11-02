@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Form, SubmitButton, List } from './styles'
+import { Container, Form, SubmitButton, List, Input } from './styles'
 import { FaGithubAlt, FaPlus, FaSpinner } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import api from '../../services/api';
@@ -10,6 +10,7 @@ class Main extends React.Component {
     newRepo: '',
     repositories: [],
     loading: false,
+    notFindRepo: false,
   }
 
   componentDidMount() {
@@ -31,18 +32,27 @@ class Main extends React.Component {
   }
   handleSubmit = async e => {
     e.preventDefault();
-    this.setState({ loading: true });
-    const { newRepo, repositories } = this.state;
-    const response = await api.get(`/repos/${newRepo}`);
-    const data = {
-      name: response.data.full_name,
-    }
-    this.setState({
-      repositories: [...repositories, data],
-      newRepo: '',
-      loading: false,
-    });
 
+    try {
+      this.setState({ loading: true });
+      const { newRepo, repositories } = this.state;
+
+      const exist = this.state.repositories.find(item => item.name === newRepo);
+
+      if (!exist) {
+        const response = await api.get(`/repos/${newRepo}`);
+        const data = {
+          name: response.data.full_name,
+        }
+        this.setState({
+          repositories: [...repositories, data],
+          newRepo: '',
+          loading: false,
+        });
+      }
+    } catch (error) {
+      this.setState({ ...this.state, notFindRepo: true, loading: false });
+    }
   }
   render() {
     const { newRepo, loading, repositories } = this.state;
@@ -53,7 +63,8 @@ class Main extends React.Component {
           Repositórios
       </h1>
         <Form onSubmit={this.handleSubmit}>
-          <input
+          <Input
+            result={this.state.notFindRepo}
             placeholder='Adicionar Repositório'
             value={newRepo}
             onChange={this.handleInputChange}
@@ -68,8 +79,8 @@ class Main extends React.Component {
         <List>
           <ul>
             {
-              repositories.map(repository => (
-                <li key={repository.name}>
+              repositories.map((repository, index) => (
+                <li key={index}>
                   <span>{repository.name}</span>
                   <Link to={`/repository/${encodeURIComponent(repository.name)}`}>Detalhes</Link >
                 </li>

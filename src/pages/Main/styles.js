@@ -31,14 +31,6 @@ export const Form = styled.form`
     margin-top: 30px;
     display: flex;
     flex-direction: row;
-
-    input {
-      flex: 1;
-      border: 1px solid;
-      padding: 10px 15px;
-      border-radius: 4px;
-      font-size: 16px;
-    }
 `;
 
 const rotate = keyframes`
@@ -96,3 +88,11 @@ export const List = styled.li`
 }
 
 `
+export const Input = styled.input`
+  flex: 1;
+  padding: 10px 15px;
+  border-radius: 4px;
+  font-size: 16px;
+
+  ${props => props.result ? css`border: 2.1px solid red` : css`border: 1px solid`}
+` 
